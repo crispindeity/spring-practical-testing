@@ -180,3 +180,5 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Test yml
+src/test/resources/*.yml
