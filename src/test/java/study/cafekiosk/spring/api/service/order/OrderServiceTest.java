@@ -2,7 +2,6 @@ package study.cafekiosk.spring.api.service.order;
 
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.groups.Tuple;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +12,15 @@ import study.cafekiosk.spring.domain.order.OrderRepository;
 import study.cafekiosk.spring.domain.orderproduct.OrderProductRepository;
 import study.cafekiosk.spring.domain.product.Product;
 import study.cafekiosk.spring.domain.product.ProductRepository;
+import study.cafekiosk.spring.domain.stock.Stock;
+import study.cafekiosk.spring.domain.stock.StockRepository;
 import study.cafekiosk.spring.util.ProductSampleData;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Transactional
 @SpringBootTest
 class OrderServiceTest {
 
@@ -29,13 +32,8 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
     @Autowired
     private OrderProductRepository orderProductRepository;
-
-    @AfterEach
-    void tearDown() {
-        orderProductRepository.deleteAllInBatch();
-        productRepository.deleteAllInBatch();
-        orderRepository.deleteAllInBatch();
-    }
+    @Autowired
+    private StockRepository stockRepository;
 
     @DisplayName("주문번호 리스트를 받아 주문을 생성한다.")
     @Test
@@ -97,12 +95,45 @@ class OrderServiceTest {
 
     @DisplayName("재고와 관련된 상품이 포함되어 있는 주문번호 리스트를 받아 주문을 생성한다.")
     @Test
-    void given_when_then() throws Exception {
+    void createOrderWithStock() throws Exception {
         //given
+        List<Product> products = ProductSampleData.generateStockProduct();
+        productRepository.saveAll(products);
+        List<Stock> stocks = List.of(
+                Stock.of("001", 2),
+                Stock.of("002", 2)
+        );
+        stockRepository.saveAll(stocks);
+        OrderCreateRequest order = new OrderCreateRequest(List.of("001", "001", "002", "003"));
+        LocalDateTime registeredDateTime = LocalDateTime.of(2023, 6, 14, 23, 12);
 
         //when
+        OrderResponse response = orderService.createOrder(order, registeredDateTime);
 
         //then
-
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(response.getId())
+                    .isNotNull();
+            softly.assertThat(response.getRegisteredDateTime())
+                    .isEqualTo(registeredDateTime);
+            softly.assertThat(response.getTotalPrice())
+                    .isEqualTo(38000);
+            softly.assertThat(response.getProducts().getProductResponses())
+                    .hasSize(4)
+                    .extracting("productNumber", "price")
+                    .containsExactlyInAnyOrder(
+                            Tuple.tuple("001", 10000),
+                            Tuple.tuple("001", 10000),
+                            Tuple.tuple("002", 13000),
+                            Tuple.tuple("003", 8000)
+                    );
+            softly.assertThat(stockRepository.findAll())
+                    .hasSize(2)
+                    .extracting("productNumber", "quantity")
+                    .containsExactlyInAnyOrder(
+                            Tuple.tuple("001", 0),
+                            Tuple.tuple("002", 1)
+                    );
+        });
     }
 }

@@ -22,4 +22,12 @@ public class ProductSampleData {
                 Product.productTestConstructor(ProductSellingStatus.SELLING, ProductType.HANDMADE, "002", "카페라떼", 4500)
         );
     }
+
+    public static List<Product> generateStockProduct() {
+        return List.of(
+                Product.productTestConstructor(ProductSellingStatus.SELLING, ProductType.BOTTLE, "001", "에비앙", 10000),
+                Product.productTestConstructor(ProductSellingStatus.SELLING, ProductType.BAKERY, "002", "크루와상", 13000),
+                Product.productTestConstructor(ProductSellingStatus.SELLING, ProductType.HANDMADE, "003", "키위주스", 5000)
+        );
+    }
 }
