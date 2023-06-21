@@ -12,7 +12,11 @@ public class OrderCreateRequest {
 
     private List<String> productNumbers;
 
-    public OrderCreateRequest(List<String> productNumbers) {
+    private OrderCreateRequest(List<String> productNumbers) {
         this.productNumbers = productNumbers;
+    }
+
+    public static OrderCreateRequest constructorForTesting(List<String> productNumbers) {
+        return new OrderCreateRequest(productNumbers);
     }
 }

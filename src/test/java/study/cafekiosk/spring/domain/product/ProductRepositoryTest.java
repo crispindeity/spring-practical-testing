@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import study.cafekiosk.spring.util.ProductSampleData;
 
 import java.util.List;
+import java.util.Optional;
 
 //@SpringBootTest
 @DataJpaTest
@@ -56,4 +57,31 @@ class ProductRepositoryTest {
                 );
     }
 
+    @DisplayName("가장 마지막으로 저장한 상품의 상품번호를 가지고 온다.")
+    @Test
+    void findLatestProduct() throws Exception {
+        //given
+        List<Product> products = ProductSampleData.generateProduct();
+        productRepository.saveAll(products);
+
+        //when
+        String latestProductNumber = productRepository.findLatestProduct()
+                .orElse("null");
+
+        //then
+        Assertions.assertThat(latestProductNumber)
+                .isEqualTo(products.get(products.size() - 1).getProductNumber());
+    }
+
+    @DisplayName("가장 마지막으로 저장한 상품의 상품번호를 읽어올때, 상품이 하나도 없는 경우에는 null을 반환한다.")
+    @Test
+    void findLatestProductWhenProductIsEmpty() throws Exception {
+        //when
+        String latestProductNumber = productRepository.findLatestProduct()
+                .orElse("null");
+
+        //then
+        Assertions.assertThat(latestProductNumber)
+                .isEqualTo("null");
+    }
 }

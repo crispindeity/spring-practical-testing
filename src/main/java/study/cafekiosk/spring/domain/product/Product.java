@@ -3,6 +3,7 @@ package study.cafekiosk.spring.domain.product;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import study.cafekiosk.spring.api.controller.product.dto.ProductGenerateRequest;
 import study.cafekiosk.spring.domain.BaseEntity;
 
 import javax.persistence.*;
@@ -36,5 +37,9 @@ public class Product extends BaseEntity {
 
     public static Product productTestConstructor(ProductSellingStatus sellingStatus, ProductType type, String productNumber, String name, int price) {
         return new Product(sellingStatus, type, productNumber, name, price);
+    }
+
+    public static Product from(ProductGenerateRequest request, String productNumber) {
+        return new Product(request.getSellingStatus(), request.getProductType(), productNumber, request.getName(), request.getPrice());
     }
 }

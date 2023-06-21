@@ -36,6 +36,9 @@ public class Stock extends BaseEntity {
     }
 
     public void deductQuantity(int quantity) {
+        if (this.quantity < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
         this.quantity -= quantity;
     }
 }
