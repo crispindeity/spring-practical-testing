@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import study.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
+import study.cafekiosk.spring.api.controller.order.request.OrderGenerateRequest;
 import study.cafekiosk.spring.api.service.order.response.OrderResponse;
 import study.cafekiosk.spring.domain.order.OrderRepository;
 import study.cafekiosk.spring.domain.orderproduct.OrderProductRepository;
@@ -49,11 +49,11 @@ class OrderServiceTest {
         //given
         List<Product> products = ProductSampleData.generateSalesStatusProduct();
         productRepository.saveAll(products);
-        OrderCreateRequest request = OrderCreateRequest.constructorForTesting(List.of("001", "002"));
+        OrderGenerateRequest request = OrderGenerateRequest.constructorForTesting(List.of("001", "002"));
         LocalDateTime registeredDateTime = LocalDateTime.of(2023, 6, 12, 12, 37);
 
         //when
-        OrderResponse response = orderService.createOrder(request, registeredDateTime);
+        OrderResponse response = orderService.createOrder(request.toServiceRequest(), registeredDateTime);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
@@ -77,11 +77,11 @@ class OrderServiceTest {
         //given
         List<Product> products = ProductSampleData.generateProduct();
         productRepository.saveAll(products);
-        OrderCreateRequest request = OrderCreateRequest.constructorForTesting(List.of("001", "001"));
+        OrderGenerateRequest request = OrderGenerateRequest.constructorForTesting(List.of("001", "001"));
         LocalDateTime registeredDateTime = LocalDateTime.of(2023, 6, 12, 12, 37);
 
         //when
-        OrderResponse response = orderService.createOrder(request, registeredDateTime);
+        OrderResponse response = orderService.createOrder(request.toServiceRequest(), registeredDateTime);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
@@ -112,11 +112,11 @@ class OrderServiceTest {
                 Stock.of("002", 2)
         );
         stockRepository.saveAll(stocks);
-        OrderCreateRequest order = OrderCreateRequest.constructorForTesting(List.of("001", "001", "002", "003"));
+        OrderGenerateRequest request = OrderGenerateRequest.constructorForTesting(List.of("001", "001", "002", "003"));
         LocalDateTime registeredDateTime = LocalDateTime.of(2023, 6, 14, 23, 12);
 
         //when
-        OrderResponse response = orderService.createOrder(order, registeredDateTime);
+        OrderResponse response = orderService.createOrder(request.toServiceRequest(), registeredDateTime);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
@@ -156,12 +156,12 @@ class OrderServiceTest {
                 Stock.of("002", 2)
         );
         stockRepository.saveAll(stocks);
-        OrderCreateRequest order = OrderCreateRequest.constructorForTesting(List.of("001", "001", "002", "003"));
+        OrderGenerateRequest request = OrderGenerateRequest.constructorForTesting(List.of("001", "001", "002", "003"));
         LocalDateTime registeredDateTime = LocalDateTime.of(2023, 6, 14, 23, 12);
 
         //when & then
         Assertions.assertThatThrownBy(() ->
-                        orderService.createOrder(order, registeredDateTime))
+                        orderService.createOrder(request.toServiceRequest(), registeredDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("재고가 부족한 상품이 있습니다.");
     }

@@ -1,5 +1,6 @@
 package study.cafekiosk.spring.api.controller.product.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import study.cafekiosk.spring.domain.product.ProductSellingStatus;
@@ -10,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProductGenerateRequest {
 
     @NotNull(message = "상품 타입은 필수 입니다.")
@@ -31,5 +32,9 @@ public class ProductGenerateRequest {
 
     public static ProductGenerateRequest of(ProductType productType, ProductSellingStatus sellingStatus, String name, int price) {
         return new ProductGenerateRequest(productType, sellingStatus, name, price);
+    }
+
+    public ProductGenerateServiceRequest toServiceRequest() {
+        return ProductGenerateServiceRequest.from(this);
     }
 }

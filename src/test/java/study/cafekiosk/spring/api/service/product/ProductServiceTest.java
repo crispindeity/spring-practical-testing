@@ -40,7 +40,7 @@ class ProductServiceTest {
         String expected = String.format("%03d", products.size() + 1);
 
         //when
-        ProductResponse response = productService.generateProduct(request);
+        ProductResponse response = productService.generateProduct(request.toServiceRequest());
 
         //then
         Assertions.assertThat(response.getProductNumber())
@@ -54,7 +54,7 @@ class ProductServiceTest {
         List<Product> products = ProductSampleData.generateProduct();
         productRepository.saveAll(products);
         ProductGenerateRequest request = ProductGenerateRequest.of(ProductType.HANDMADE, ProductSellingStatus.SELLING, "카푸치노", 5000);
-        productService.generateProduct(request);
+        productService.generateProduct(request.toServiceRequest());
 
         //when
         List<Product> foundProduct = productRepository.findAll();
@@ -78,7 +78,7 @@ class ProductServiceTest {
         ProductGenerateRequest request = ProductGenerateRequest.of(ProductType.HANDMADE, ProductSellingStatus.SELLING, "카푸치노", 5000);
 
         //when
-        ProductResponse response = productService.generateProduct(request);
+        ProductResponse response = productService.generateProduct(request.toServiceRequest());
 
         //then
         Assertions.assertThat(response.getProductNumber()).isEqualTo(firstProductNumber);

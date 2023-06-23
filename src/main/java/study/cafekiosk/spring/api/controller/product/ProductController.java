@@ -22,7 +22,7 @@ public class ProductController {
 
     @PostMapping("/v1/products/new")
     public BaseResponse<ProductResponse> generateProduct(@Valid @RequestBody ProductGenerateRequest request) {
-        return BaseResponse.success(HttpStatus.OK, productService.generateProduct(request));
+        return BaseResponse.success(HttpStatus.OK, productService.generateProduct(request.toServiceRequest()));
     }
 
     @GetMapping("/v1/products/selling")

@@ -1,7 +1,7 @@
 package study.cafekiosk.spring.api.service.order;
 
 import org.springframework.stereotype.Service;
-import study.cafekiosk.spring.api.controller.order.request.OrderCreateRequest;
+import study.cafekiosk.spring.api.service.order.request.OrderGenerateServiceRequest;
 import study.cafekiosk.spring.api.service.order.response.OrderResponse;
 import study.cafekiosk.spring.domain.order.Order;
 import study.cafekiosk.spring.domain.order.OrderRepository;
@@ -31,14 +31,13 @@ public class OrderService {
     }
 
     /**
-     *
      * @param request
      * @param registeredDateTime
      * @return
      */
     // TODO: 동시성 문제 해결을 위해 로직을 개선시켜 보자.
     @Transactional
-    public OrderResponse createOrder(OrderCreateRequest request, LocalDateTime registeredDateTime) {
+    public OrderResponse createOrder(OrderGenerateServiceRequest request, LocalDateTime registeredDateTime) {
         List<String> productNumbers = request.getProductNumbers();
         List<Product> products = findProductBy(productNumbers);
         deductStockQuantity(products);
