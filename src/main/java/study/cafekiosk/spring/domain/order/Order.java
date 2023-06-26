@@ -3,6 +3,7 @@ package study.cafekiosk.spring.domain.order;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.aspectj.weaver.ast.Or;
 import study.cafekiosk.spring.domain.BaseEntity;
 import study.cafekiosk.spring.domain.orderproduct.OrderProduct;
 import study.cafekiosk.spring.domain.product.Product;
@@ -40,8 +41,21 @@ public class Order extends BaseEntity {
                 .toList();
     }
 
+    private Order(List<Product> products, OrderStatus orderStatus, LocalDateTime registeredDateTime) {
+        this.orderStatus = orderStatus;
+        this.totalPrice = calculateTotalPrice(products);
+        this.registeredDateTime = registeredDateTime;
+        this.orderProducts = products.stream()
+                .map(product -> new OrderProduct(this, product))
+                .toList();
+    }
+
     public static Order of(List<Product> products, LocalDateTime registeredDateTime) {
         return new Order(products, registeredDateTime);
+    }
+
+    public static Order statusBy(List<Product> products, OrderStatus orderStatus, LocalDateTime registeredDateTime) {
+        return new Order(products, orderStatus, registeredDateTime);
     }
 
     private int calculateTotalPrice(List<Product> product) {
