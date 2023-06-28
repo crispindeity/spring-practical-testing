@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import study.cafekiosk.spring.util.ProductSampleData;
 
 import java.util.List;
-import java.util.Optional;
 
 //@SpringBootTest
 @DataJpaTest

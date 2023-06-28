@@ -6,7 +6,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import study.cafekiosk.spring.IntegrationTestSupport;
 import study.cafekiosk.spring.api.controller.product.dto.ProductGenerateRequest;
 import study.cafekiosk.spring.api.service.product.response.ProductResponse;
 import study.cafekiosk.spring.domain.product.Product;
@@ -17,8 +17,7 @@ import study.cafekiosk.spring.util.ProductSampleData;
 
 import java.util.List;
 
-@SpringBootTest
-class ProductServiceTest {
+class ProductServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private ProductService productService;
