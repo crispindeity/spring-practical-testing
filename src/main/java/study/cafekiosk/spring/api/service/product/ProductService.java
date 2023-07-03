@@ -6,6 +6,7 @@ import study.cafekiosk.spring.api.controller.product.dto.ProductGenerateServiceR
 import study.cafekiosk.spring.api.service.product.response.ProductResponse;
 import study.cafekiosk.spring.api.service.product.response.ProductsResponse;
 import study.cafekiosk.spring.domain.product.Product;
+import study.cafekiosk.spring.domain.product.ProductNumberFactory;
 import study.cafekiosk.spring.domain.product.ProductRepository;
 import study.cafekiosk.spring.domain.product.ProductSellingStatus;
 
@@ -14,14 +15,16 @@ import study.cafekiosk.spring.domain.product.ProductSellingStatus;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductNumberFactory productNumberFactory;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, ProductNumberFactory productNumberFactory) {
         this.productRepository = productRepository;
+        this.productNumberFactory = productNumberFactory;
     }
 
     @Transactional
     public ProductResponse generateProduct(ProductGenerateServiceRequest request) {
-        String nextProductNumber = generateNextProductNumber();
+        String nextProductNumber = productNumberFactory.generateNextProductNumber();
         Product newProduct = Product.from(request, nextProductNumber);
         productRepository.save(newProduct);
         return ProductResponse.from(newProduct);
@@ -34,16 +37,6 @@ public class ProductService {
                         .map(ProductResponse::from)
                         .toList()
         );
-    }
-
-    private String generateNextProductNumber() {
-        String firstProductNumber = "001";
-        String latestProductNumber = productRepository.findLatestProduct().orElse(firstProductNumber);
-        if (latestProductNumber.equals(firstProductNumber)) {
-            return latestProductNumber;
-        }
-        int nextProductNumber = Integer.parseInt(latestProductNumber) + 1;
-        return String.format("%03d", nextProductNumber);
     }
 }
 
