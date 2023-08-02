@@ -32,6 +32,7 @@ public abstract class RestDocsSupport {
      * 굳이 문서를 작성할때 Spring 서버를 띄울 필요가 없기 때문에 사용
      * 단, standaloneSetup 에 문서화할 controller 를 넣어줘야 한다.
      * 간편하게 모든 controller 를 넣어주기 위해 추상 메서드(initController()) 생성
+     *
      */
     @BeforeEach
     void setUp(RestDocumentationContextProvider provider) {
